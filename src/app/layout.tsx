@@ -21,7 +21,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
         {children}
-      </body>
+      <script src="/voyah/js/hide-footer.js"></script>
+</body>
     </html>
   );
 }
