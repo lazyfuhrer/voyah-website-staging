@@ -46,6 +46,11 @@ const nextConfig: NextConfig = {
         destination: "/en/contact-us",
         permanent: false,
       },
+      {
+        source: "/book-a-test-drive",
+        destination: "/en/book-a-test-drive",
+        permanent: false,
+      },
     ];
   },
 
@@ -69,6 +74,10 @@ const nextConfig: NextConfig = {
         destination: "/voyah/contact-us/thankyou.html",
       },
       {
+        source: "/en/book-a-test-drive",
+        destination: "/voyah/book-a-test-drive/index.html",
+      },
+      {
         source: "/en/:path(voyah-dream|voyah-free|privacy-policy|terms-of-use)",
         destination: "/voyah/:path/index.html",
       },
@@ -85,6 +94,10 @@ const nextConfig: NextConfig = {
       {
         source: "/ar/contact-us/thankyou",
         destination: "/voyah/ar/contact-us/thankyou.html",
+      },
+      {
+        source: "/ar/book-a-test-drive",
+        destination: "/voyah/ar/book-a-test-drive/index.html",
       },
       {
         source: "/ar/:path(voyah-dream|voyah-free|privacy-policy|terms-of-use)",
