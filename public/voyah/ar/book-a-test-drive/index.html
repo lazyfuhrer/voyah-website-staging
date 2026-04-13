@@ -500,16 +500,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         .then(function (_ref) {
           var res = _ref.res, data = _ref.data;
           if (res.ok) {
-            msgEl.textContent = "شكرًا لك. سنتواصل معك قريبًا.";
-            form.reset();
-            if (dateInput) {
-              minYmd = getKsaYmd();
-              maxYmd = addCalendarYearsYmd(minYmd, 5);
-              dateInput.min = minYmd;
-              dateInput.max = maxYmd;
-              dateInput.value = getKsaYmd();
-            }
-            syncTimeMin();
+            window.location.assign("/ar/contact-us/thankyou");
             return;
           } else {
             msgEl.textContent = data.error || "حدث خطأ. يرجى المحاولة مرة أخرى.";
