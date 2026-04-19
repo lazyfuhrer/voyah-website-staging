@@ -11,21 +11,12 @@ window.addEventListener("load", function () {
     if (row) row.remove();
   }
 
-  function removeFooterPolicies() {
-    const el = document.querySelector(
-      "#colophon div.w-full.md\\:w-2\\/5.max-md\\:mt-5"
-    );
-    if (el) el.remove();
-  }
-
   // Run once
   removeFooterPhone();
-  removeFooterPolicies();
 
   // Watch for Alpine rendering / changes
   const observer = new MutationObserver(() => {
     removeFooterPhone();
-    removeFooterPolicies();
   });
 
   observer.observe(document.body, {
