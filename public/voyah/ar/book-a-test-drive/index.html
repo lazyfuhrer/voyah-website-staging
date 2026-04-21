@@ -439,6 +439,46 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var dateInput = document.getElementById("date");
     var timeInput = document.getElementById("time");
     if (!form || !msgEl || !btn) return;
+    var timeErrEl = null;
+    function ensureTimeErrEl() {
+      if (timeErrEl) return timeErrEl;
+      if (!timeInput) return null;
+      var row = timeInput.closest(".jet-form-builder-row") || timeInput.parentElement;
+      if (!row) return null;
+      var labelText = row.querySelector(".jet-form-builder__label-text");
+      if (!labelText) return null;
+      var existing = row.querySelector("#time-inline-error");
+      if (existing) {
+        timeErrEl = existing;
+        return timeErrEl;
+      }
+      var div = document.createElement("div");
+      div.id = "time-inline-error";
+      div.setAttribute("aria-live", "polite");
+      div.style.color = "#ef4444";
+      div.style.fontSize = "0.875rem";
+      div.style.marginTop = "4px";
+      div.textContent = "";
+      labelText.parentElement.appendChild(div);
+      timeErrEl = div;
+      return timeErrEl;
+    }
+    function setTimeError(msg) {
+      var el = ensureTimeErrEl();
+      if (el) el.textContent = msg || "";
+      if (timeInput) timeInput.setCustomValidity(msg || "");
+    }
+    function validateTimeInline() {
+      if (!dateInput || !timeInput) return;
+      setTimeError("");
+      var today = getKsaYmd();
+      if (dateInput.value !== today) return;
+      var t = (timeInput.value || "").toString().trim();
+      if (!t) return;
+      if (!/^\d{2}:\d{2}$/.test(t)) return;
+      var nowHm = getKsaHm();
+      if (t < nowHm) setTimeError(ERR_PAST_TIME);
+    }
     var minYmd = "";
     var maxYmd = "";
     if (dateInput) {
@@ -453,14 +493,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       var today = getKsaYmd();
       if (dateInput.value === today) {
         timeInput.min = getKsaHm();
-        if (timeInput.value && timeInput.value < timeInput.min) timeInput.value = "";
+        if (timeInput.value && timeInput.value < timeInput.min) {
+          timeInput.value = "";
+          setTimeError(ERR_PAST_TIME);
+        }
       } else {
         timeInput.removeAttribute("min");
+        setTimeError("");
       }
+      validateTimeInline();
     }
     syncTimeMin();
     if (dateInput) dateInput.addEventListener("change", syncTimeMin);
     if (dateInput) dateInput.addEventListener("input", syncTimeMin);
+    if (timeInput) timeInput.addEventListener("change", validateTimeInline);
+    if (timeInput) timeInput.addEventListener("input", validateTimeInline);
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       msgEl.textContent = "";
