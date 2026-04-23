@@ -394,6 +394,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   var ERR_PAST_DATE = "Please choose today or a future date (Saudi Arabia time).";
   var ERR_NEED_TIME = "Please select a preferred time when booking for today.";
   var ERR_PAST_TIME = "That time has already passed. Please pick a later time.";
+  var ERR_BAD_EMAIL = "Please enter a valid email address.";
+  var ERR_BAD_PHONE = "Please enter a valid Saudi mobile number.";
   var ERR_DATE_RANGE = "Please choose a date within the allowed booking window.";
   function pad2(n) { return n < 10 ? "0" + n : String(n); }
   function getKsaYmd() {
@@ -434,7 +436,91 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var btn = document.getElementById("book-test-drive-form-submit");
     var dateInput = document.getElementById("date");
     var timeInput = document.getElementById("time");
+    var emailInput = document.getElementById("email");
+    var phoneInput = document.getElementById("phone");
     if (!form || !msgEl || !btn) return;
+    if (phoneInput) {
+      phoneInput.setAttribute("inputmode", "tel");
+      phoneInput.setAttribute("autocomplete", "tel");
+    }
+    if (emailInput) {
+      emailInput.setAttribute("autocomplete", "email");
+    }
+
+    function ensureInlineErrEl(input, id) {
+      if (!input) return null;
+      var row = input.closest(".jet-form-builder-row") || input.parentElement;
+      if (!row) return null;
+      var existing = row.querySelector("#" + id);
+      if (existing) return existing;
+      var label = row.querySelector(".jet-form-builder__label");
+      if (!label) return null;
+      var div = document.createElement("div");
+      div.id = id;
+      div.setAttribute("aria-live", "polite");
+      div.style.color = "#ef4444";
+      div.style.fontSize = "0.875rem";
+      div.style.marginTop = "4px";
+      div.textContent = "";
+      label.appendChild(div);
+      return div;
+    }
+    function setFieldError(input, id, msg) {
+      var el = ensureInlineErrEl(input, id);
+      if (el) el.textContent = msg || "";
+      if (input) input.setCustomValidity(msg || "");
+    }
+
+    function normalizeSaudiMobile(raw) {
+      var digits = (raw || "").toString().replace(/\D/g, "");
+      if (!digits) return "";
+      if (digits.startsWith("00")) digits = digits.slice(2);
+      if (digits.startsWith("966")) digits = digits.slice(3);
+      if (digits.startsWith("0")) digits = digits.slice(1);
+      if (digits.length === 9 && digits.startsWith("5")) return "+966" + digits;
+      if (digits.length === 10 && digits.startsWith("05")) return "+966" + digits.slice(1);
+      return "";
+    }
+    function validateEmailInline() {
+      if (!emailInput) return true;
+      setFieldError(emailInput, "email-inline-error", "");
+      var v = (emailInput.value || "").toString().trim();
+      if (!v) return true;
+      if (emailInput.validity && emailInput.validity.typeMismatch) {
+        setFieldError(emailInput, "email-inline-error", ERR_BAD_EMAIL);
+        return false;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+        setFieldError(emailInput, "email-inline-error", ERR_BAD_EMAIL);
+        return false;
+      }
+      return true;
+    }
+    function validatePhoneInline() {
+      if (!phoneInput) return true;
+      setFieldError(phoneInput, "phone-inline-error", "");
+      var v = (phoneInput.value || "").toString().trim();
+      if (!v) return true;
+      var normalized = normalizeSaudiMobile(v);
+      if (!normalized) {
+        setFieldError(phoneInput, "phone-inline-error", ERR_BAD_PHONE);
+        return false;
+      }
+      return true;
+    }
+    function validateDateInline() {
+      if (!dateInput) return true;
+      setFieldError(dateInput, "date-inline-error", "");
+      var d = (dateInput.value || "").toString().trim();
+      if (!d) return true;
+      var today = getKsaYmd();
+      if (d < today) {
+        setFieldError(dateInput, "date-inline-error", ERR_PAST_DATE);
+        return false;
+      }
+      return true;
+    }
+
     var timeErrEl = null;
     function ensureTimeErrEl() {
       if (timeErrEl) return timeErrEl;
@@ -486,6 +572,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     function syncTimeMin() {
       if (!dateInput || !timeInput) return;
+      validateDateInline();
       var today = getKsaYmd();
       if (dateInput.value === today) {
         timeInput.min = getKsaHm();
@@ -504,9 +591,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (dateInput) dateInput.addEventListener("input", syncTimeMin);
     if (timeInput) timeInput.addEventListener("change", validateTimeInline);
     if (timeInput) timeInput.addEventListener("input", validateTimeInline);
+    if (dateInput) dateInput.addEventListener("blur", validateDateInline);
+    if (emailInput) emailInput.addEventListener("input", validateEmailInline);
+    if (emailInput) emailInput.addEventListener("blur", validateEmailInline);
+    if (phoneInput) phoneInput.addEventListener("input", validatePhoneInline);
+    if (phoneInput) phoneInput.addEventListener("blur", validatePhoneInline);
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       msgEl.textContent = "";
+      validateEmailInline();
+      validatePhoneInline();
+      validateDateInline();
+      validateTimeInline();
+      if ((emailInput && !emailInput.checkValidity()) || (phoneInput && !phoneInput.checkValidity()) || (dateInput && !dateInput.checkValidity()) || (timeInput && !timeInput.checkValidity())) {
+        return;
+      }
       var fd = new FormData(form);
       var v = new URLSearchParams(window.location.search).get("v") || "";
       var dateStr = (fd.get("date") || "").toString().trim();
@@ -522,9 +621,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         msgEl.textContent = check.msg;
         return;
       }
+      var phoneRaw = (fd.get("phone") || "").toString().trim();
+      var phoneNorm = normalizeSaudiMobile(phoneRaw);
       var payload = {
         name: (fd.get("name") || "").toString().trim(),
-        phone: (fd.get("phone") || "").toString().trim(),
+        phone: phoneNorm || phoneRaw,
         email: (fd.get("email") || "").toString().trim(),
         date: dateStr,
         select_model: (fd.get("select_model") || "").toString().trim(),
