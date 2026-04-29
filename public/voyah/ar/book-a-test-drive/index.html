@@ -98,6 +98,9 @@ li ol > li:before {
 <link rel="apple-touch-icon" href="https://voyahqatar.com/wp-content/uploads/2025/02/cropped-cropped-Voyah-removebg-preview-270x270-1-180x180.png" />
 <meta name="msapplication-TileImage" content="https://voyahqatar.com/wp-content/uploads/2025/02/cropped-cropped-Voyah-removebg-preview-270x270-1-270x270.png" />
 	<link rel="stylesheet" href="/voyah/css/custom.css">
+	<link rel="stylesheet" href="/voyah/vendor/flatpickr/flatpickr.min.css">
+	<link rel="stylesheet" href="/voyah/css/book-test-drive-datepicker.css">
+	<link rel="stylesheet" href="/voyah/css/book-test-drive-timeslot.css">
 </head>
 
 <body class="rtl wp-singular page-template-default page page-id-200 wp-embed-responsive wp-theme-voyah" x-data="{ loaded: false }" x-init="loaded = true">
@@ -337,7 +340,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div  class="jet-form-builder-row field-type-date-field" >
 <div class="jet-form-builder__label">
-<div class="jet-form-builder__label-text">موعد مفضل <span class="jet-form-builder__required">*</span></div></div><input data-value="&#039;%CT::CurrentDate|addMonths(5)|toDate%&#039;" class="jet-form-builder__field date-field" required="required" name="date" type="date" data-field-name="date" id="date" data-jfb-sync="null" data-min="&#039;%CT::CurrentDate|toDate%&#039;">
+<div class="jet-form-builder__label-text">موعد مفضل <span class="jet-form-builder__required">*</span></div></div><input data-value="&#039;%CT::CurrentDate|addMonths(5)|toDate%&#039;" class="jet-form-builder__field date-field" required="required" name="date" type="date" data-field-name="date" id="date" placeholder="dd/mm/yyyy" data-jfb-sync="null" data-min="&#039;%CT::CurrentDate|toDate%&#039;">
 </div></div>
 
 
@@ -1052,6 +1055,9 @@ wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
 		<script src='https://img1.wsimg.com/traffic-assets/js/tccl-tti.min.js' onload="window.tti.calculateTTI()"></script>
 		
 <script src="/voyah/js/hide-footer.js"></script>
+<script src="/voyah/vendor/flatpickr/flatpickr.min.js"></script>
+<script src="/voyah/js/book-test-drive-datepicker.js"></script>
+<script src="/voyah/js/book-test-drive-timeslot.js"></script>
 
 </body>
 </html>

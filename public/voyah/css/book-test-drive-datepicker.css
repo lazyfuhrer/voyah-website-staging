@@ -1,0 +1,169 @@
+/* Desktop-only datepicker UI for Book a Test Drive */
+@media (min-width: 1024px) and (pointer: fine) {
+  /* Make the input feel like a modern picker field */
+  #book-test-drive-form #date.voyah-date-flatpickr {
+    background-color: #fff;
+    border: 1px solid rgba(17, 24, 39, 0.16);
+    border-radius: 12px;
+    padding: 0.75rem 2.75rem 0.75rem 0.9rem;
+    line-height: 1.25rem;
+    box-shadow: 0 1px 0 rgba(17, 24, 39, 0.04);
+    transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  }
+
+  #book-test-drive-form #date.voyah-date-flatpickr::placeholder {
+    color: rgba(17, 24, 39, 0.45);
+  }
+
+  #book-test-drive-form #date.voyah-date-flatpickr:focus {
+    outline: none;
+    border-color: rgba(17, 24, 39, 0.28);
+    box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.10);
+  }
+
+  /* Subtle calendar icon (CSS only, no extra assets) */
+  #book-test-drive-form #date.voyah-date-flatpickr {
+    background-image:
+      radial-gradient(circle at 20% 25%, rgba(17, 24, 39, 0.65) 2px, transparent 3px),
+      radial-gradient(circle at 50% 25%, rgba(17, 24, 39, 0.65) 2px, transparent 3px),
+      radial-gradient(circle at 80% 25%, rgba(17, 24, 39, 0.65) 2px, transparent 3px),
+      linear-gradient(rgba(17, 24, 39, 0.65), rgba(17, 24, 39, 0.65)),
+      linear-gradient(rgba(17, 24, 39, 0.65), rgba(17, 24, 39, 0.65));
+    background-size:
+      0 0,
+      0 0,
+      0 0,
+      14px 2px,
+      14px 2px;
+    background-position:
+      0 0,
+      0 0,
+      0 0,
+      right 1.15rem top 1.05rem,
+      right 1.15rem top 1.4rem;
+    background-repeat: no-repeat;
+  }
+
+  /* Flatpickr popover: modern card */
+  .flatpickr-calendar.open {
+    border-radius: 16px;
+    border: 1px solid rgba(17, 24, 39, 0.10);
+    box-shadow:
+      0 20px 60px rgba(17, 24, 39, 0.18),
+      0 4px 18px rgba(17, 24, 39, 0.10);
+    overflow: hidden;
+  }
+
+  .flatpickr-calendar:before,
+  .flatpickr-calendar:after {
+    display: none;
+  }
+
+  /* Header / month strip */
+  .flatpickr-months {
+    padding: 10px 10px 6px;
+    border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+  }
+
+  .flatpickr-current-month {
+    font-size: 0.98rem;
+    font-weight: 600;
+    padding-top: 8px;
+  }
+
+  .flatpickr-months .flatpickr-prev-month,
+  .flatpickr-months .flatpickr-next-month {
+    top: 8px;
+    padding: 8px;
+    border-radius: 10px;
+    transition: background 120ms ease;
+  }
+
+  .flatpickr-months .flatpickr-prev-month:hover,
+  .flatpickr-months .flatpickr-next-month:hover {
+    background: rgba(17, 24, 39, 0.06);
+  }
+
+  /* Weekday row */
+  .flatpickr-weekdays {
+    padding: 6px 10px 0;
+  }
+
+  span.flatpickr-weekday {
+    color: rgba(17, 24, 39, 0.58);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+  }
+
+  /* Days grid spacing */
+  .flatpickr-days {
+    padding: 8px 10px 12px;
+    width: auto;
+  }
+
+  .dayContainer {
+    width: auto;
+    min-width: auto;
+    max-width: none;
+  }
+
+  .flatpickr-day {
+    border-radius: 12px;
+    height: 38px;
+    line-height: 38px;
+    margin: 2px 0;
+    max-width: 42px;
+    color: rgba(17, 24, 39, 0.86);
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+
+  .flatpickr-day:hover,
+  .flatpickr-day:focus {
+    background: rgba(17, 24, 39, 0.06);
+    border-color: transparent;
+  }
+
+  .flatpickr-day.today {
+    border-color: rgba(17, 24, 39, 0.26);
+  }
+
+  .flatpickr-day.today:hover,
+  .flatpickr-day.today:focus {
+    background: rgba(17, 24, 39, 0.10);
+    color: rgba(17, 24, 39, 0.92);
+  }
+
+  /* Selected day: premium dark pill */
+  .flatpickr-day.selected,
+  .flatpickr-day.selected:hover,
+  .flatpickr-day.selected:focus {
+    background: #111827;
+    border-color: #111827;
+    color: #fff;
+  }
+
+  .flatpickr-day.flatpickr-disabled,
+  .flatpickr-day.flatpickr-disabled:hover {
+    color: rgba(17, 24, 39, 0.28);
+  }
+
+  /* RTL refinements for Arabic page */
+  html[dir="rtl"] .flatpickr-calendar.open {
+    direction: rtl;
+  }
+
+  html[dir="rtl"] .flatpickr-months .flatpickr-prev-month,
+  html[dir="rtl"] .flatpickr-months .flatpickr-next-month {
+    transform: scaleX(-1);
+  }
+
+  /* Flatpickr's internal containers sometimes keep LTR; force nav consistency */
+  .voyah-flatpickr-rtl .flatpickr-months,
+  .voyah-flatpickr-rtl .flatpickr-weekdays,
+  .voyah-flatpickr-rtl .flatpickr-days {
+    direction: rtl;
+  }
+}
+
