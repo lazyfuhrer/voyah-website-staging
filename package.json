@@ -6,7 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "mirror:home-assets": "node scripts/mirror-voyah-home-assets.mjs --apply",
+    "mirror:home-assets:dry": "node scripts/mirror-voyah-home-assets.mjs",
+    "mirror:voyah-free-assets": "node scripts/mirror-voyah-home-assets.mjs --apply public/voyah/voyah-free/index.html public/voyah/ar/voyah-free/index.html",
+    "mirror:voyah-free-assets:dry": "node scripts/mirror-voyah-home-assets.mjs public/voyah/voyah-free/index.html public/voyah/ar/voyah-free/index.html",
+    "mirror:voyah-dream-assets": "node scripts/mirror-voyah-home-assets.mjs --apply public/voyah/voyah-dream/index.html public/voyah/ar/voyah-dream/index.html",
+    "mirror:voyah-dream-assets:dry": "node scripts/mirror-voyah-home-assets.mjs public/voyah/voyah-dream/index.html public/voyah/ar/voyah-dream/index.html",
+    "mirror:book-a-test-drive-assets": "node scripts/mirror-voyah-home-assets.mjs --apply public/voyah/book-a-test-drive/index.html public/voyah/ar/book-a-test-drive/index.html",
+    "mirror:book-a-test-drive-assets:dry": "node scripts/mirror-voyah-home-assets.mjs public/voyah/book-a-test-drive/index.html public/voyah/ar/book-a-test-drive/index.html"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
