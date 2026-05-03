@@ -333,7 +333,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="jet-form-builder__label-text">رقم الهاتف <span class="jet-form-builder__required">*</span></div></div><div class="jet-form-builder__field-wrap">
 				<div class="flex items-center gap-2">
 					<span class="px-3 py-2 min-w-[72px] text-center whitespace-nowrap rounded border border-neutral-300 bg-neutral-50 text-neutral-700 select-none" style="display:inline-flex;align-items:center;justify-content:center;min-width:72px;white-space:nowrap;" aria-hidden="true">+971</span>
-					<input required="required" name="phone" id="phone" type="text" data-field-name="phone" class="jet-form-builder__field text-field flex-1" data-jfb-sync="null" autocomplete="off_byI2ZiTS" placeholder="5XXXXXXXX" maxlength="9" inputmode="numeric" pattern="\\d*">
+					<input required="required" name="phone" id="phone" type="text" data-field-name="phone" class="jet-form-builder__field text-field flex-1" data-jfb-sync="null" autocomplete="off_byI2ZiTS" placeholder="5XXXXXXXX" maxlength="9" inputmode="numeric" pattern="[0-9]*">
 				</div>
 					</div>
 </div>
@@ -493,15 +493,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       var existing = row.querySelector("#" + id);
       if (existing) return existing;
       var label = row.querySelector(".jet-form-builder__label");
-      if (!label) return null;
+      var wrap = row.querySelector(".jet-form-builder__field-wrap");
+      var anchor = wrap;
+      if (!anchor) {
+        anchor = label ? label.nextElementSibling : null;
+        while (anchor && anchor.classList && anchor.classList.contains("voyah-inline-field-error")) {
+          anchor = anchor.nextElementSibling;
+        }
+      }
+      if (!anchor || anchor.parentNode !== row) return null;
       var div = document.createElement("div");
       div.id = id;
+      div.className = "voyah-inline-field-error";
       div.setAttribute("aria-live", "polite");
-      div.style.color = "#ef4444";
-      div.style.fontSize = "0.875rem";
-      div.style.marginTop = "4px";
       div.textContent = "";
-      label.appendChild(div);
+      row.insertBefore(div, anchor);
       return div;
     }
     function setFieldError(input, id, msg) {
@@ -511,7 +517,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     function normalizeSaudiMobile(raw) {
       // UAE mobile normalization (fixed +971 prefix in UI)
-      var digits = (raw || "").toString().replace(/\\D/g, "");
+      var digits = (raw || "").toString().replace(/\D/g, "");
       if (!digits) return "";
       if (digits.startsWith("00")) digits = digits.slice(2);
       if (digits.startsWith("971")) digits = digits.slice(3);
@@ -528,7 +534,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         setFieldError(emailInput, "email-inline-error", ERR_BAD_EMAIL);
         return false;
       }
-      if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v)) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
         setFieldError(emailInput, "email-inline-error", ERR_BAD_EMAIL);
         return false;
       }
@@ -545,24 +551,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       if (!v) return true;
       if (!/^5\d{8}$/.test(v)) {
         setFieldError(phoneInput, "phone-inline-error", ERR_BAD_PHONE);
-        // #region agent log
-        try{fetch('http://127.0.0.1:7577/ingest/a3586764-c693-4131-b4bf-44fd2ece4e95',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'90e5c3'},body:JSON.stringify({sessionId:'90e5c3',runId:'post-fix',hypothesisId:'uae-phone-format',location:'public/voyah/ar/book-a-test-drive/index.html:validatePhoneInline',message:'phone fails uae pattern',data:{v:v.slice(0,16),len:v.length},timestamp:Date.now()})}).catch(()=>{});}catch(e){}
-        // #endregion agent log
         return false;
       }
       var normalized = normalizeSaudiMobile(v);
       if (!normalized) {
         setFieldError(phoneInput, "phone-inline-error", ERR_BAD_PHONE);
-        // #region agent log
-        try{fetch('http://127.0.0.1:7577/ingest/a3586764-c693-4131-b4bf-44fd2ece4e95',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'90e5c3'},body:JSON.stringify({sessionId:'90e5c3',runId:'post-fix',hypothesisId:'digits-only',location:'public/voyah/ar/book-a-test-drive/index.html:validatePhoneInline',message:'phone invalid after sanitize',data:{raw:raw.slice(0,32),digitsOnly:digitsOnly.slice(0,32),len:digitsOnly.length},timestamp:Date.now()})}).catch(()=>{});}catch(e){}
-        // #endregion agent log
         return false;
       }
       return true;
     }
     function sanitizeNameValue(v) {
       // Allow Arabic + Latin letters and spaces
-      return (v || "").toString().replace(/[^A-Za-z\\u0600-\\u06FF ]+/g, "").replace(/\\s{2,}/g, " ").trimStart();
+      return (v || "").toString().replace(/[^A-Za-z\u0600-\u06FF ]+/g, "").replace(/\s{2,}/g, " ").trimStart();
     }
     function validateNameInline() {
       if (!nameInput) return true;
@@ -571,7 +571,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       var cleaned = sanitizeNameValue(raw);
       if (cleaned !== raw) nameInput.value = cleaned;
       if (!cleaned) return true;
-      if (!/^[A-Za-z\\u0600-\\u06FF ]+$/.test(cleaned)) {
+      if (!/^[A-Za-z\u0600-\u06FF ]+$/.test(cleaned)) {
         setFieldError(nameInput, "name-inline-error", ERR_BAD_NAME);
         return false;
       }
@@ -632,8 +632,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       if (!timeInput) return null;
       var row = timeInput.closest(".jet-form-builder-row") || timeInput.parentElement;
       if (!row) return null;
-      var labelText = row.querySelector(".jet-form-builder__label-text");
-      if (!labelText) return null;
       var existing = row.querySelector("#time-inline-error");
       if (existing) {
         timeErrEl = existing;
@@ -641,12 +639,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
       var div = document.createElement("div");
       div.id = "time-inline-error";
+      div.className = "voyah-inline-field-error";
       div.setAttribute("aria-live", "polite");
-      div.style.color = "#ef4444";
-      div.style.fontSize = "0.875rem";
-      div.style.marginTop = "4px";
       div.textContent = "";
-      labelText.parentElement.appendChild(div);
+      var timeWrap = row.querySelector(".voyah-time-slot-wrap");
+      var anchor = timeWrap || timeInput;
+      if (anchor && anchor.parentNode === row) {
+        row.insertBefore(div, anchor);
+      } else {
+        row.appendChild(div);
+      }
       timeErrEl = div;
       return timeErrEl;
     }
@@ -654,6 +656,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       var el = ensureTimeErrEl();
       if (el) el.textContent = msg || "";
       if (timeInput) timeInput.setCustomValidity(msg || "");
+    }
+    function prefetchInlineErrorSlots() {
+      if (nameInput) ensureInlineErrEl(nameInput, "name-inline-error");
+      if (emailInput) ensureInlineErrEl(emailInput, "email-inline-error");
+      if (phoneInput) ensureInlineErrEl(phoneInput, "phone-inline-error");
+      if (dateInput) ensureInlineErrEl(dateInput, "date-inline-error");
+      var selectModel = document.getElementById("select_model");
+      if (selectModel) ensureInlineErrEl(selectModel, "select-model-inline-error");
+      ensureTimeErrEl();
     }
     function validateTimeInline() {
       if (!dateInput || !timeInput) return;
@@ -692,6 +703,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
       validateTimeInline();
     }
+    prefetchInlineErrorSlots();
     syncTimeMin();
     if (dateInput) dateInput.addEventListener("change", syncTimeMin);
     if (dateInput) dateInput.addEventListener("input", syncTimeMin);
@@ -704,7 +716,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (phoneInput) phoneInput.addEventListener("blur", validatePhoneInline);
     if (nameInput) nameInput.addEventListener("input", validateNameInline);
     if (nameInput) nameInput.addEventListener("blur", validateNameInline);
-    
+
     // Date/Time UX: open picker on click anywhere
     bindShowPickerAnywhere(dateInput, null, false);
     bindShowPickerAnywhere(timeInput, null, false);
@@ -736,9 +748,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
       var phoneRaw = (fd.get("phone") || "").toString().trim();
       var phoneNorm = normalizeSaudiMobile(phoneRaw);
-      // #region agent log
-      try{fetch('http://127.0.0.1:7577/ingest/a3586764-c693-4131-b4bf-44fd2ece4e95',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'90e5c3'},body:JSON.stringify({sessionId:'90e5c3',runId:'post-fix',hypothesisId:'submit-phone-prefix',location:'public/voyah/ar/book-a-test-drive/index.html:submit',message:'phone payload',data:{phoneRaw:phoneRaw.slice(0,24),phoneNorm:(phoneNorm||'').slice(0,24)},timestamp:Date.now()})}).catch(()=>{});}catch(e){}
-      // #endregion agent log
       var payload = {
         name: (fd.get("name") || "").toString().trim(),
         phone: phoneNorm || phoneRaw,

@@ -85,3 +85,33 @@ footer#colophon [x-data*="contactLinks"] img {
   gap: 12px;
   margin-left: auto;
 }
+
+/* Book a test drive: minimal fixed band between label and field (same height empty vs error → no input jump) */
+#book-test-drive-form {
+  --voyah-field-error-gap-before: 0;
+  /* One tight line at 0.875rem; grows only if the message wraps */
+  --voyah-field-error-slot: calc(0.875rem * 1.15);
+  --voyah-field-error-gap-after: 0;
+}
+
+#book-test-drive-form .jet-form-builder__label {
+  margin-bottom: 0;
+}
+
+#book-test-drive-form .voyah-inline-field-error {
+  width: 100%;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  color: #ef4444;
+  font-size: 0.875rem;
+  line-height: 1.15;
+  margin: var(--voyah-field-error-gap-before) 0 var(--voyah-field-error-gap-after);
+  padding: 0;
+  min-height: var(--voyah-field-error-slot);
+  display: block;
+}
+
+/* Space between stacked fields so the next row’s label isn’t cramped under the previous input */
+#book-test-drive-form .jet-form-builder-row:not(.field-type-submit-field) {
+  margin-bottom: 1.25rem;
+}

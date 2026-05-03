@@ -166,9 +166,13 @@
     wrap.appendChild(trigger);
     wrap.appendChild(menu);
 
-    // Insert after label; keep layout consistent.
+    // Insert after label (skip inline error strip if present); keep layout consistent.
     const label = row.querySelector(".jet-form-builder__label");
-    if (label && label.nextSibling) row.insertBefore(wrap, label.nextSibling);
+    let ref = label ? label.nextElementSibling : null;
+    while (ref && ref.classList && ref.classList.contains("voyah-inline-field-error")) {
+      ref = ref.nextElementSibling;
+    }
+    if (ref) row.insertBefore(wrap, ref);
     else row.appendChild(wrap);
 
     return { row, wrap, trigger, valueEl, menu, activeIndex: 0 };
