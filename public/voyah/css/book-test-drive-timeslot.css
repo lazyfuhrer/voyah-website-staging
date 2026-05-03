@@ -21,11 +21,15 @@
 
   /* Input-like trigger */
   .voyah-time-combobox {
+    box-sizing: border-box;
     width: 100%;
+    min-height: 3rem;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     text-align: left;
+    font: inherit;
+    font-size: 1rem;
     background-color: #fff;
     border: 1px solid rgba(17, 24, 39, 0.16);
     border-radius: 12px;
@@ -34,6 +38,10 @@
     box-shadow: 0 1px 0 rgba(17, 24, 39, 0.04);
     transition: border-color 140ms ease, box-shadow 140ms ease;
     cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2359595E' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E");
+    background-size: 20px 20px;
+    background-position: right 1rem center;
+    background-repeat: no-repeat;
   }
 
   .voyah-time-combobox:focus {
@@ -51,36 +59,48 @@
     color: rgba(17, 24, 39, 0.45);
   }
 
-  /* Chevron */
-  .voyah-time-slot-wrap::after {
-    content: "";
-    position: absolute;
-    right: 1.05rem;
-    top: 22px;
-    width: 10px;
-    height: 10px;
-    border-right: 2px solid rgba(17, 24, 39, 0.55);
-    border-bottom: 2px solid rgba(17, 24, 39, 0.55);
-    transform: rotate(45deg);
-    pointer-events: none;
-  }
-
   /* Dropdown menu */
   .voyah-time-menu {
     position: absolute;
     left: 0;
     right: 0;
     bottom: calc(100% + 10px);
-    background: #fff;
-    border: 1px solid rgba(17, 24, 39, 0.10);
+    background: linear-gradient(
+      148.59deg,
+      rgb(212, 212, 212) -1.72%,
+      rgb(186, 186, 186) 66.35%,
+      rgb(110, 110, 110) 100%
+    );
+    border: 0;
     border-radius: 16px;
     box-shadow:
-      0 20px 60px rgba(17, 24, 39, 0.18),
-      0 4px 18px rgba(17, 24, 39, 0.10);
+      62px 78px 40px rgba(148, 148, 148, 0.01),
+      35px 44px 34px rgba(148, 148, 148, 0.05),
+      15px 20px 25px rgba(148, 148, 148, 0.09),
+      4px 5px 14px rgba(148, 148, 148, 0.1);
     padding: 10px 0;
     z-index: 50;
     max-height: 280px;
     overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Ensure closed state works even with flex styling */
+  .voyah-time-menu[hidden] {
+    display: none !important;
+  }
+
+  /* Keep scrolling, hide the visible scrollbar */
+  .voyah-time-menu {
+    -ms-overflow-style: none; /* IE/Edge Legacy */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .voyah-time-menu::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 
   .voyah-time-option {
@@ -92,6 +112,8 @@
     cursor: pointer;
     user-select: none;
     transition: background 120ms ease, color 120ms ease;
+    text-align: center;
+    width: calc(100% - 20px);
   }
 
   .voyah-time-option:hover {
@@ -121,11 +143,7 @@
     padding-right: 0.9rem;
     padding-left: 2.75rem;
     text-align: right;
-  }
-
-  html[dir="rtl"] .voyah-time-slot-wrap::after {
-    right: auto;
-    left: 1.05rem;
+    background-position: left 1rem center;
   }
 
   html[dir="rtl"] .voyah-time-menu {

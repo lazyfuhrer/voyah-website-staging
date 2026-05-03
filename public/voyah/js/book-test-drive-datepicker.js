@@ -40,6 +40,40 @@
     return "default";
   }
 
+  function lockFlatpickrYear(instance) {
+    const yearEl = instance && instance.currentYearElement;
+    if (!yearEl) return;
+
+    yearEl.setAttribute("readonly", "readonly");
+    yearEl.setAttribute("tabindex", "-1");
+    yearEl.removeAttribute("disabled");
+
+    // Block direct edits (typing, spin buttons, wheel) while keeping the value visible.
+    yearEl.style.cursor = "default";
+    yearEl.style.pointerEvents = "none";
+
+    if (yearEl.dataset && yearEl.dataset.voyahYearLockBound === "1") return;
+    if (yearEl.dataset) yearEl.dataset.voyahYearLockBound = "1";
+
+    yearEl.addEventListener(
+      "keydown",
+      (e) => {
+        const k = e.key;
+        if (k === "Tab" || k === "Escape") return;
+        e.preventDefault();
+      },
+      true
+    );
+
+    yearEl.addEventListener(
+      "wheel",
+      (e) => {
+        e.preventDefault();
+      },
+      { passive: false, capture: true }
+    );
+  }
+
   function initOnce() {
     const dateInput = document.getElementById("date");
     if (!dateInput) return;
@@ -65,14 +99,33 @@
       allowInput: false,
       clickOpens: true,
       dateFormat: "Y-m-d",
+      altInput: true,
+      altFormat: "d/m/Y",
       minDate,
       maxDate,
       disableMobile: true,
       locale,
       onReady: (_selectedDates, _dateStr, instance) => {
+        // Ensure the visible alt input receives our custom styling.
+        if (instance && instance.altInput) {
+          instance.altInput.classList.add("voyah-date-flatpickr");
+          if (!instance.altInput.getAttribute("placeholder")) instance.altInput.setAttribute("placeholder", PLACEHOLDER);
+        }
+
+        lockFlatpickrYear(instance);
+
         // Keep the calendar aligned with text direction on RTL pages.
         const isRtl = document.documentElement.getAttribute("dir") === "rtl";
         if (isRtl) instance.calendarContainer.classList.add("voyah-flatpickr-rtl");
+      },
+      onOpen: (_selectedDates, _dateStr, instance) => {
+        lockFlatpickrYear(instance);
+      },
+      onMonthChange: (_selectedDates, _dateStr, instance) => {
+        lockFlatpickrYear(instance);
+      },
+      onYearChange: (_selectedDates, _dateStr, instance) => {
+        lockFlatpickrYear(instance);
       },
       onChange: () => {
         // Ensure existing listeners (min-time sync, validation) run.
