@@ -56,7 +56,7 @@ function normalizeWpRemoteUrl(raw) {
     .replaceAll("http:\\/\\/", "http://")
     .replaceAll("\\/", "/");
 
-  if (!/^https?:\/\/voyahqatar\.com\//i.test(unescaped)) return null;
+  if (!/^https?:\/\/www\.voyahsaudiarabia\.com\//i.test(unescaped)) return null;
   if (!unescaped.includes("/wp-content/")) return null;
   if (!isProbablyWpContentFetchTarget(unescaped)) return null;
   return unescaped;
@@ -66,13 +66,13 @@ function extractRemoteWpContentUrls(text) {
   const out = new Set();
 
   // Normal URLs.
-  for (const m of text.matchAll(/https?:\/\/voyahqatar\.com\/[^\s"'()<>)\\]+/gi)) {
+  for (const m of text.matchAll(/https?:\/\/www\.voyahsaudiarabia\.com\/[^\s"'()<>)\\]+/gi)) {
     const u = normalizeWpRemoteUrl(m[0]);
     if (u) out.add(u);
   }
 
   // JSON-escaped URLs.
-  for (const m of text.matchAll(/https?:\\\/\\\/voyahqatar\.com\\\/[^\s"'()<>)]+/gi)) {
+  for (const m of text.matchAll(/https?:\\\/\\\/www\.voyahsaudiarabia\.com\\\/[^\s"'()<>)]+/gi)) {
     const u = normalizeWpRemoteUrl(m[0]);
     if (u) out.add(u);
   }
@@ -116,7 +116,7 @@ function extractMissingLocalWpContentTargets(text, filePath) {
     const destAbs = path.join(PUBLIC_VOYAH_DIR, normalizedRel);
     if (fileExistsNonEmpty(destAbs)) return;
 
-    const remoteUrl = `https://voyahqatar.com/${normalizedRel}${query}`;
+    const remoteUrl = `https://www.voyahsaudiarabia.com/${normalizedRel}${query}`;
     out.set(destAbs, remoteUrl);
   };
 
@@ -206,25 +206,25 @@ function toLocalDestPath(remoteUrl) {
 }
 
 function rewriteWpRemoteToLocal(text) {
-  let out = text.replaceAll("https://voyahqatar.com/wp-content/", "/wp-content/");
-  out = out.replaceAll("http://voyahqatar.com/wp-content/", "/wp-content/");
-  out = out.replaceAll("https://voyahqatar.com/voyah/wp-content/", "/wp-content/");
-  out = out.replaceAll("http://voyahqatar.com/voyah/wp-content/", "/wp-content/");
+  let out = text.replaceAll("https://www.voyahsaudiarabia.com/wp-content/", "/wp-content/");
+  out = out.replaceAll("http://www.voyahsaudiarabia.com/wp-content/", "/wp-content/");
+  out = out.replaceAll("https://www.voyahsaudiarabia.com/voyah/wp-content/", "/wp-content/");
+  out = out.replaceAll("http://www.voyahsaudiarabia.com/voyah/wp-content/", "/wp-content/");
 
   out = out.replaceAll(
-    "https:\\/\\/voyahqatar.com\\/wp-content\\/",
+    "https:\\/\\/www.voyahsaudiarabia.com\\/wp-content\\/",
     "\\/wp-content\\/"
   );
   out = out.replaceAll(
-    "http:\\/\\/voyahqatar.com\\/wp-content\\/",
+    "http:\\/\\/www.voyahsaudiarabia.com\\/wp-content\\/",
     "\\/wp-content\\/"
   );
   out = out.replaceAll(
-    "https:\\/\\/voyahqatar.com\\/voyah\\/wp-content\\/",
+    "https:\\/\\/www.voyahsaudiarabia.com\\/voyah\\/wp-content\\/",
     "\\/wp-content\\/"
   );
   out = out.replaceAll(
-    "http:\\/\\/voyahqatar.com\\/voyah\\/wp-content\\/",
+    "http:\\/\\/www.voyahsaudiarabia.com\\/voyah\\/wp-content\\/",
     "\\/wp-content\\/"
   );
 

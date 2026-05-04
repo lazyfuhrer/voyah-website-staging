@@ -40,7 +40,7 @@ function normalizeWpRemoteUrl(raw: string): string | null {
     .replaceAll("http:\\/\\/", "http://")
     .replaceAll("\\/", "/");
 
-  if (!/^https?:\/\/voyahqatar\.com\//i.test(unescaped)) return null;
+  if (!/^https?:\/\/www\.voyahsaudiarabia\.com\//i.test(unescaped)) return null;
   if (!unescaped.includes("/wp-content/")) return null;
   if (!IMAGE_EXT_RE.test(unescaped)) return null;
   return unescaped;
@@ -50,13 +50,13 @@ function extractRemoteImageUrls(text: string): Set<string> {
   const out = new Set<string>();
 
   // Normal URLs.
-  for (const m of text.matchAll(/https?:\/\/voyahqatar\.com\/[^\s"'()<>)\\]+/gi)) {
+  for (const m of text.matchAll(/https?:\/\/www\.voyahsaudiarabia\.com\/[^\s"'()<>)\\]+/gi)) {
     const u = normalizeWpRemoteUrl(m[0]);
     if (u) out.add(u);
   }
 
   // JSON-escaped URLs.
-  for (const m of text.matchAll(/https?:\\\/\\\/voyahqatar\.com\\\/[^\s"'()<>)]+/gi)) {
+  for (const m of text.matchAll(/https?:\\\/\\\/www\.voyahsaudiarabia\.com\\\/[^\s"'()<>)]+/gi)) {
     const u = normalizeWpRemoteUrl(m[0]);
     if (u) out.add(u);
   }
@@ -124,16 +124,16 @@ function toLocalDestPath(remoteUrl: string) {
 
 function rewriteWpRemoteToLocal(text: string) {
   // Replace normal URLs.
-  let out = text.replaceAll("https://voyahqatar.com/wp-content/", "/wp-content/");
-  out = out.replaceAll("http://voyahqatar.com/wp-content/", "/wp-content/");
+  let out = text.replaceAll("https://www.voyahsaudiarabia.com/wp-content/", "/wp-content/");
+  out = out.replaceAll("http://www.voyahsaudiarabia.com/wp-content/", "/wp-content/");
 
   // Replace JSON-escaped URLs.
   out = out.replaceAll(
-    "https:\\/\\/voyahqatar.com\\/wp-content\\/",
+    "https:\\/\\/www.voyahsaudiarabia.com\\/wp-content\\/",
     "\\/wp-content\\/"
   );
   out = out.replaceAll(
-    "http:\\/\\/voyahqatar.com\\/wp-content\\/",
+    "http:\\/\\/www.voyahsaudiarabia.com\\/wp-content\\/",
     "\\/wp-content\\/"
   );
 
