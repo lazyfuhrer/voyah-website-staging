@@ -115,3 +115,25 @@ footer#colophon [x-data*="contactLinks"] img {
 #book-test-drive-form .jet-form-builder-row:not(.field-type-submit-field) {
   margin-bottom: 1.25rem;
 }
+
+/* Book a test drive: ensure the two form columns are equal width */
+#book-test-drive-form .wp-block-columns.is-layout-flex > .wp-block-column {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Book a test drive: keep field widths consistent across columns */
+#book-test-drive-form #email,
+#book-test-drive-form #select_model,
+#book-test-drive-form #time {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+/* Desktop enhanced preferred time UI should match other field widths */
+#book-test-drive-form .voyah-time-slot-wrap,
+#book-test-drive-form .voyah-time-combobox {
+  width: 100%;
+  box-sizing: border-box;
+}
