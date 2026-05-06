@@ -13,6 +13,20 @@ const GTM_ID = "GTM-WQ24PKSC";
 export const metadata: Metadata = {
   title: "VOYAH - Coming Soon",
   description: "We're building something beautiful. Leave your details and be the first to know when we launch.",
+  icons: {
+    icon: [
+      {
+        url: "/voyah/wp-content/themes/voyah/assets/svg/voyah_logo.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: [
+      {
+        url: "/voyah/wp-content/themes/voyah/assets/svg/voyah_logo.svg",
+        type: "image/svg+xml",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
